@@ -73,8 +73,12 @@ func (cmd *SearchCommand) searchPayload(client *QdrantClient) error {
 		}
 
 		searched += len(scrollResp.Result.Points)
-		offset = scrollResp.Result.NextPageOffset
-		if offset == nil {
+		if scrollResp.Result.NextPageOffset == nil {
+			break
+		}
+		offsetStr := fmt.Sprintf("%v", scrollResp.Result.NextPageOffset)
+		offset = &offsetStr
+		if offsetStr == "" || offsetStr == "<nil>" {
 			break
 		}
 	}

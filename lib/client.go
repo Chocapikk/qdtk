@@ -118,8 +118,8 @@ type ScrollRequest struct {
 }
 
 type ScrollResponse struct {
-	Points     []Point `json:"points"`
-	NextPageOffset *string `json:"next_page_offset"`
+	Points         []Point     `json:"points"`
+	NextPageOffset interface{} `json:"next_page_offset"`
 }
 
 type Point struct {

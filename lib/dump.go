@@ -186,8 +186,12 @@ func (cmd *DumpCommand) dumpCollection(client *QdrantClient, collection string, 
 			break
 		}
 
-		offset = scrollResp.Result.NextPageOffset
-		if offset == nil {
+		if scrollResp.Result.NextPageOffset == nil {
+			break
+		}
+		offsetStr := fmt.Sprintf("%v", scrollResp.Result.NextPageOffset)
+		offset = &offsetStr
+		if offsetStr == "" || offsetStr == "<nil>" {
 			break
 		}
 	}

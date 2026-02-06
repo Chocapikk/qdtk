@@ -49,21 +49,21 @@ func (cmd *ListCommand) Run(client *QdrantClient) error {
 type StatsCommand struct{}
 
 func (cmd *StatsCommand) Run(client *QdrantClient) error {
+	// Get collections first to check auth
+	var resp QdrantResponse[CollectionsList]
+	err := client.Request("GET", "/collections", nil, &resp)
+	if err != nil {
+		return err
+	}
+
 	// Get telemetry info
 	var telemetry QdrantResponse[TelemetryInfo]
-	err := client.Request("GET", "/telemetry", nil, &telemetry)
+	client.Request("GET", "/telemetry", nil, &telemetry)
 
 	PrintSection("Database Info")
 
-	if err == nil && telemetry.Result.App.Version != "" {
+	if telemetry.Result.App.Version != "" {
 		PrintItem("Version", fmt.Sprintf("Qdrant %s", telemetry.Result.App.Version))
-	}
-
-	// Get collections and sum up stats
-	var resp QdrantResponse[CollectionsList]
-	err = client.Request("GET", "/collections", nil, &resp)
-	if err != nil {
-		return err
 	}
 
 	PrintItem("Collections", len(resp.Result.Collections))
